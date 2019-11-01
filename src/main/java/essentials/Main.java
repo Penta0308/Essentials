@@ -358,14 +358,15 @@ public class Main extends Plugin {
 			}
 			if (isvoting) {
 				if (e.message.equals("y")) {
-					if (Vote.list.contains(e.player.uuid)) {
+					if (Vote.isVoted(e.player.uuid)) {
 						e.player.sendMessage("[green][Essentials][scarlet] You're already voted!");
 					} else {
-						Vote.list.add(e.player.uuid);
-						int current = Vote.list.size();
+						Vote.addVoted(e.player.uuid);
+						int current = Vote.getVoted();
 						Call.sendMessage("[green][Essentials] " + current + " players voted. need " + (require - current) + " more players.");
 						if ((require - current) <= 0) {
-							Vote.counting.interrupt();
+							Vote.success();
+							//TODO dadsgs
 						}
 					}
 				}
