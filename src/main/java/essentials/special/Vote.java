@@ -24,8 +24,96 @@ import static essentials.Global.bundle;
 import static essentials.Global.printStackTrace;
 import static io.anuke.mindustry.Vars.*;
 
-public class Vote{
-    private static Player player;
+public class Vote {
+    public static boolean isvoting;
+    public static int require;
+    static VoteThread vt;
+
+    public static void success() {
+
+    }
+
+    public void main(Player player, String type, String target){
+        //Vote.player = player;
+        Player targetplayer;
+        if(target != null){
+            Player other = Vars.playerGroup.find(p -> p.name.equalsIgnoreCase(target));
+            if(other != null){
+                targetplayer = other;
+            }
+        }
+        if(playerGroup.size() <= 3){
+            bundle(player, "vote-min");
+            return;
+        }
+
+        switch(type) {
+            case "gameover":
+                if(!isvoting){
+                    isvoting = true;
+                    for (int i = 0; i < playerGroup.size(); i++) {
+                        Player others = playerGroup.all().get(i);
+                        bundle(others, "vote-gameover");
+                    }
+                    vt = new VoteThread(player, "gameover", targetplayer);
+                } else {
+                    bundle(player, "vote-in-processing");
+                }
+                break;
+            case "skipwave":
+                if(!isvoting){
+                    isvoting = true;
+                    for (int i = 0; i < playerGroup.size(); i++) {
+                        Player others = playerGroup.all().get(i);
+                        bundle(others, "vote-skipwave");
+                    }
+                    vt = new VoteThread(player, "skipwave", targetplayer);
+                } else {
+                    bundle(player, "vote-in-processing");
+                }
+                break;
+            case "kick":
+                if(!isvoting){
+                    isvoting = true;
+                    for (int i = 0; i < playerGroup.size(); i++) {
+                        Player others = playerGroup.all().get(i);
+                        bundle(others, "vote-kick");
+                    }
+                    vt = new VoteThread(player, "kick", targetplayer);
+                } else {
+                    bundle(player, "vote-in-processing");
+                }
+                break;
+            case "rollback":
+                if(!isvoting){
+                    isvoting = true;
+                    for (int i = 0; i < playerGroup.size(); i++) {
+                        Player others = playerGroup.all().get(i);
+                        bundle(others, "vote-rollback");
+                    }
+                    vt = new VoteThread(player, "rollback", targetplayer);
+                } else {
+                    bundle(player, "vote-in-processing");
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    public static boolean isVoted(String uuid) {
+        return vt.Voted.contains(uuid);
+    }
+
+    public static void addVoted(String uuid) {
+        vt.Voted.add(uuid);
+    }
+
+    public static int getVoted() {
+        return vt.Voted.size();
+    }
+
+/*    private static Player player;
     private static Player target;
     public static boolean isvoting;
     public static ArrayList<String> list = new ArrayList<>();
@@ -247,5 +335,5 @@ public class Vote{
             list.clear();
             isvoting = false;
         }
-    });
+    });*/
 }
